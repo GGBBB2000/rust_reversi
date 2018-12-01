@@ -5,3 +5,4 @@ authors = ["GGBBB2000 <ggbbb@mineo.jp>"]
 edition = "2018"
 
 [dependencies]
+ansi_term = "0.11"
