@@ -29,6 +29,35 @@ impl Board {
         Self { board }
     }
 
+    fn game_over(&self) -> bool {
+        //1:black 2:white
+        let mut black = 0;
+        let mut white = 0;
+        for y in 0..8 {
+            for x in 0..8 {
+                if self.can_put(1, x, y) || self.can_put(2, x, y) {
+                    return false;
+                }
+                if self.board[y][x] == 1 {
+                    black += 1;
+                } else if self.board[y][x] == 2 {
+                    white += 1;
+                }
+            }
+        }
+
+        if black > white {
+            println!("Black Win!");
+        } else if black == white {
+            println!("Draw");
+        } else {
+            println!("White Win!");
+        }
+        println!("Black: {} White: {}", black, white);
+
+        true
+    }
+
     fn print_board(&self, rock: u32) {
         print!(" ");
         for i in 0..8 {
@@ -55,14 +84,15 @@ impl Board {
     }
 
     fn can_put(&self, rock: u32, x: usize, y: usize) -> bool {
-        if self.search_board(rock, x, y, Dir::UpperLeft) != (x, y) 
-        || self.search_board(rock, x, y, Dir::Up) != (x, y)
-        || self.search_board(rock, x, y, Dir::UpperRight) != (x, y)
-        || self.search_board(rock, x, y, Dir::Right) != (x, y)
-        || self.search_board(rock, x, y, Dir::LowerRight) != (x, y)
-        || self.search_board(rock, x, y, Dir::Low) != (x, y)
-        || self.search_board(rock, x, y, Dir::LowerLeft) != (x, y)
-        || self.search_board(rock, x, y, Dir::Left) != (x, y){
+        if self.search_board(rock, x, y, Dir::UpperLeft) != (x, y)
+            || self.search_board(rock, x, y, Dir::Up) != (x, y)
+            || self.search_board(rock, x, y, Dir::UpperRight) != (x, y)
+            || self.search_board(rock, x, y, Dir::Right) != (x, y)
+            || self.search_board(rock, x, y, Dir::LowerRight) != (x, y)
+            || self.search_board(rock, x, y, Dir::Low) != (x, y)
+            || self.search_board(rock, x, y, Dir::LowerLeft) != (x, y)
+            || self.search_board(rock, x, y, Dir::Left) != (x, y)
+        {
             return true;
         }
         false
@@ -71,39 +101,38 @@ impl Board {
     fn put_rock(&mut self, rock: u32, x: usize, y: usize) {
         let target = self.search_board(rock, x, y, Dir::UpperLeft);
         self.reverse_rock(rock, x, y, target, Dir::UpperLeft);
-        println!("UpperLeft:{}:{}", target.0, target.1);
+        // println!("UpperLeft:{}:{}", target.0, target.1);
 
         let target = self.search_board(rock, x, y, Dir::Up);
         let _ = self.reverse_rock(rock, x, y, target, Dir::Up);
-        println!("Up:{}:{}", target.0, target.1);
+        // println!("Up:{}:{}", target.0, target.1);
 
         let target = self.search_board(rock, x, y, Dir::UpperRight);
         self.reverse_rock(rock, x, y, target, Dir::UpperRight);
-        println!("UpperRight:{}:{}", target.0, target.1);
+        // println!("UpperRight:{}:{}", target.0, target.1);
 
         let target = self.search_board(rock, x, y, Dir::Right);
         self.reverse_rock(rock, x, y, target, Dir::Right);
-        println!("Right:{}:{}", target.0, target.1);
+        // println!("Right:{}:{}", target.0, target.1);
 
         let target = self.search_board(rock, x, y, Dir::LowerRight);
         self.reverse_rock(rock, x, y, target, Dir::LowerRight);
-        println!("LowerRight:{}:{}", target.0, target.1);
+        // println!("LowerRight:{}:{}", target.0, target.1);
 
         let target = self.search_board(rock, x, y, Dir::Low);
         self.reverse_rock(rock, x, y, target, Dir::Low);
-        println!("Low:{}:{}", target.0, target.1);
+        // println!("Low:{}:{}", target.0, target.1);
 
         let target = self.search_board(rock, x, y, Dir::LowerLeft);
         self.reverse_rock(rock, x, y, target, Dir::LowerLeft);
-        println!("LowerLeft:{}:{}", target.0, target.1);
+        // println!("LowerLeft:{}:{}", target.0, target.1);
 
         let target = self.search_board(rock, x, y, Dir::Left);
         self.reverse_rock(rock, x, y, target, Dir::Left);
-        println!("Left:{}:{}\n", target.0, target.1);
+        // println!("Left:{}:{}\n", target.0, target.1);
     }
 
     fn search_board(&self, rock: u32, x: usize, y: usize, dir: Dir) -> (usize, usize) {
-        let mut no_white_flag = true;
         match dir {
             Dir::UpperLeft => {
                 if x == 0 || y == 0 {
@@ -261,7 +290,7 @@ impl Board {
                 let mut y_i = y;
                 while x_i >= target.0 && y >= target.1 {
                     self.board[y_i][x_i] = rock;
-                    if x_i == 0 || y == 0 {
+                    if x_i == 0 || y_i == 0 {
                         break;
                     }
                     x_i -= 1;
@@ -278,7 +307,7 @@ impl Board {
                 let mut y_i = y;
                 while x_i <= target.0 && y >= target.1 {
                     self.board[y_i][x_i] = rock;
-                    if x_i == 7 || y == 0 {
+                    if x_i == 7 || y_i == 0 {
                         break;
                     }
                     x_i += 1;
@@ -295,7 +324,7 @@ impl Board {
                 let mut y_i = y;
                 while x_i <= target.0 && y <= target.1 {
                     self.board[y_i][x_i] = rock;
-                    if x_i == 7 || y == 7 {
+                    if x_i == 7 || y_i == 7 {
                         break;
                     }
                     x_i += 1;
@@ -312,7 +341,7 @@ impl Board {
                 let mut y_i = y;
                 while x_i >= target.0 && y <= target.1 {
                     self.board[y_i][x_i] = rock;
-                    if x_i == 0 || y == 7 {
+                    if x_i == 0 || y_i == 7 {
                         break;
                     }
                     x_i -= 1;
@@ -338,19 +367,41 @@ fn play_game() {
     let mut rock = 1;
 
     loop {
+        if board.game_over() {
+            break;
+        }
         if rock == 1 {
             println!("Player:Black");
         } else {
             println!("Player:White");
         }
         board.print_board(rock);
+        {
+            let mut no_place_to_put = true;
+            for y in 0..8 {
+                for x in 0..8 {
+                    if board.can_put(rock, x, y) 
+                        && board.board[y][x] == 0 {
+                        no_place_to_put = false;
+                    }
+                }
+            }
+            if no_place_to_put {
+                println!("There isn't the place you can put the rock");
+                rock = if rock % 2 == 0 { 1 } else { 2 };
+                continue;
+            }
+        }
         let x = get_input("x");
         let y = get_input("y");
         if x > 7 || y > 7 {
-            println!("Invalid value");
+            println!("Invalid value.");
             continue;
         } else if board.board[y][x] == 1 || board.board[y][x] == 2 {
             println!("There is already another rock!");
+            continue;
+        } else if !board.can_put(rock, x, y) {
+            println!("{}", Red.paint("You can't put the rock there."));
             continue;
         }
         board.put_rock(rock, x, y);
