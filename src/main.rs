@@ -288,7 +288,7 @@ impl Board {
             Dir::UpperLeft => {
                 let mut x_i = x;
                 let mut y_i = y;
-                while x_i >= target.0 && y >= target.1 {
+                while x_i >= target.0 && y_i >= target.1 {
                     self.board[y_i][x_i] = rock;
                     if x_i == 0 || y_i == 0 {
                         break;
@@ -305,7 +305,7 @@ impl Board {
             Dir::UpperRight => {
                 let mut x_i = x;
                 let mut y_i = y;
-                while x_i <= target.0 && y >= target.1 {
+                while x_i <= target.0 && y_i >= target.1 {
                     self.board[y_i][x_i] = rock;
                     if x_i == 7 || y_i == 0 {
                         break;
@@ -322,7 +322,7 @@ impl Board {
             Dir::LowerRight => {
                 let mut x_i = x;
                 let mut y_i = y;
-                while x_i <= target.0 && y <= target.1 {
+                while x_i <= target.0 && y_i <= target.1 {
                     self.board[y_i][x_i] = rock;
                     if x_i == 7 || y_i == 7 {
                         break;
@@ -339,7 +339,7 @@ impl Board {
             Dir::LowerLeft => {
                 let mut x_i = x;
                 let mut y_i = y;
-                while x_i >= target.0 && y <= target.1 {
+                while x_i >= target.0 && y_i <= target.1 {
                     self.board[y_i][x_i] = rock;
                     if x_i == 0 || y_i == 7 {
                         break;
@@ -380,8 +380,7 @@ fn play_game() {
             let mut no_place_to_put = true;
             for y in 0..8 {
                 for x in 0..8 {
-                    if board.can_put(rock, x, y) 
-                        && board.board[y][x] == 0 {
+                    if board.can_put(rock, x, y) && board.board[y][x] == 0 {
                         no_place_to_put = false;
                     }
                 }
