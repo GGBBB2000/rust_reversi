@@ -7,6 +7,7 @@ struct Board {
     board: [[u32; 8]; 8],
 }
 
+#[derive(Debug, Clone, Copy)]
 enum Dir {
     UpperLeft,
     Up,
@@ -17,6 +18,17 @@ enum Dir {
     LowerLeft,
     Left,
 }
+
+const DIRS: [Dir; 8] = [
+    Dir::UpperLeft,
+    Dir::Up,
+    Dir::UpperRight,
+    Dir::Right,
+    Dir::LowerRight,
+    Dir::Low,
+    Dir::LowerLeft,
+    Dir::Left,
+];
 
 impl Board {
     fn new() -> Self {
@@ -82,52 +94,20 @@ impl Board {
     }
 
     fn can_put(&self, rock: u32, x: usize, y: usize) -> bool {
-        if self.search_board(rock, x, y, Dir::UpperLeft) != (x, y)
-            || self.search_board(rock, x, y, Dir::Up) != (x, y)
-            || self.search_board(rock, x, y, Dir::UpperRight) != (x, y)
-            || self.search_board(rock, x, y, Dir::Right) != (x, y)
-            || self.search_board(rock, x, y, Dir::LowerRight) != (x, y)
-            || self.search_board(rock, x, y, Dir::Low) != (x, y)
-            || self.search_board(rock, x, y, Dir::LowerLeft) != (x, y)
-            || self.search_board(rock, x, y, Dir::Left) != (x, y)
-        {
-            return true;
+        for d in DIRS.iter() {
+            if self.search_board(rock, x, y, *d) != (x, y) {
+                return true;
+            }
         }
         false
     }
 
     fn put_rock(&mut self, rock: u32, x: usize, y: usize) {
-        let target = self.search_board(rock, x, y, Dir::UpperLeft);
-        self.reverse_rock(rock, x, y, target, Dir::UpperLeft);
-        // println!("UpperLeft:{}:{}", target.0, target.1);
-
-        let target = self.search_board(rock, x, y, Dir::Up);
-        self.reverse_rock(rock, x, y, target, Dir::Up);
-        // println!("Up:{}:{}", target.0, target.1);
-
-        let target = self.search_board(rock, x, y, Dir::UpperRight);
-        self.reverse_rock(rock, x, y, target, Dir::UpperRight);
-        // println!("UpperRight:{}:{}", target.0, target.1);
-
-        let target = self.search_board(rock, x, y, Dir::Right);
-        self.reverse_rock(rock, x, y, target, Dir::Right);
-        // println!("Right:{}:{}", target.0, target.1);
-
-        let target = self.search_board(rock, x, y, Dir::LowerRight);
-        self.reverse_rock(rock, x, y, target, Dir::LowerRight);
-        // println!("LowerRight:{}:{}", target.0, target.1);
-
-        let target = self.search_board(rock, x, y, Dir::Low);
-        self.reverse_rock(rock, x, y, target, Dir::Low);
-        // println!("Low:{}:{}", target.0, target.1);
-
-        let target = self.search_board(rock, x, y, Dir::LowerLeft);
-        self.reverse_rock(rock, x, y, target, Dir::LowerLeft);
-        // println!("LowerLeft:{}:{}", target.0, target.1);
-
-        let target = self.search_board(rock, x, y, Dir::Left);
-        self.reverse_rock(rock, x, y, target, Dir::Left);
-        // println!("Left:{}:{}\n", target.0, target.1);
+        for d in DIRS.iter() {
+            let target = self.search_board(rock, x, y, *d);
+            self.reverse_rock(rock, x, y, target, *d);
+            // println!("{:?}:{}:{}", d, target.0, target.1);
+        }
     }
 
     fn search_board(&self, rock: u32, x: usize, y: usize, dir: Dir) -> (usize, usize) {
