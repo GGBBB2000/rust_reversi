@@ -71,12 +71,10 @@ impl Board {
                     print!("{}", Black.on(Green).paint("●"));
                 } else if self.board[y][x] == 2 {
                     print!("{}", White.on(Green).paint("●"));
+                } else if self.can_put(rock, x, y) {
+                    print!("{}", Red.on(Green).paint("*"));
                 } else {
-                    if self.can_put(rock, x, y) {
-                        print!("{}", Red.on(Green).paint("*"));
-                    } else {
-                        print!("{}", Black.on(Green).paint("*"));
-                    }
+                    print!("{}", Black.on(Green).paint("*"));
                 }
             }
             println!();
@@ -104,7 +102,7 @@ impl Board {
         // println!("UpperLeft:{}:{}", target.0, target.1);
 
         let target = self.search_board(rock, x, y, Dir::Up);
-        let _ = self.reverse_rock(rock, x, y, target, Dir::Up);
+        self.reverse_rock(rock, x, y, target, Dir::Up);
         // println!("Up:{}:{}", target.0, target.1);
 
         let target = self.search_board(rock, x, y, Dir::UpperRight);
@@ -298,7 +296,7 @@ impl Board {
                 }
             }
             Dir::Up => {
-                for i in target.1..y + 1 {
+                for i in target.1..=y {
                     self.board[i][target.0] = rock;
                 }
             }
@@ -315,7 +313,7 @@ impl Board {
                 }
             }
             Dir::Right => {
-                for i in x..target.0 + 1 {
+                for i in x..=target.0 {
                     self.board[target.1][i] = rock;
                 }
             }
@@ -332,7 +330,7 @@ impl Board {
                 }
             }
             Dir::Low => {
-                for i in y..target.1 + 1 {
+                for i in y..=target.1 {
                     self.board[i][target.0] = rock;
                 }
             }
@@ -349,7 +347,7 @@ impl Board {
                 }
             }
             Dir::Left => {
-                for i in target.0..x + 1 {
+                for i in target.0..=x {
                     self.board[target.1][i] = rock;
                 }
             }
